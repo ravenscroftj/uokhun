@@ -2,6 +2,12 @@
 
 Very lightweight status monitoring app written in rust.
 
+Aim of project:
+ * Alert user when a web service goes down (or responds weirdly)
+ * Use minimal CPU + memory
+ * Work well in docker+kubernetes setup (configurable via env vars etc)
+ * Teach @ravenscroftj how to build Rust applications.
+
 ![screenshot](assets/screenshot.png)
 
 ## Requirements
