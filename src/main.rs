@@ -4,42 +4,16 @@ extern crate fern;
 extern crate serde_json;
 extern crate http;
 
-// use nix::sys::signal::*;
-
 
 use std::env;
 use std::thread;
 use std::time;
 use std::collections::HashMap;
 
-use fern::colors::{Color, ColoredLevelConfig};
-
 mod config;
+mod logger;
 
-fn setup_logger() -> Result<(), fern::InitError> {
 
-    let mut colors = ColoredLevelConfig::new()
-        // use builder methods
-        .info(Color::Green);
-        // or access raw fields
-        colors.warn = Color::Magenta;
-
-    fern::Dispatch::new()
-        .format(move |out, message, record| {
-            out.finish(format_args!(
-                "{}[{}][{}] {}",
-                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
-                record.target(),
-                colors.color(record.level()),
-                message
-            ))
-        })
-        .level(log::LevelFilter::Debug)
-        .chain(std::io::stdout())
-        .chain(fern::log_file("output.log")?)
-        .apply()?;
-    Ok(())
-}
 
 enum UOkClientError {
     UrlError(reqwest::UrlError),
@@ -54,8 +28,6 @@ fn check_endpoint(config: &config::UOKEndpointConfig) -> Result<reqwest::Respons
     let client = reqwest::Client::new();
 
     //todo validation of client method
-
-
     let method = match config.method {
         // try to parse method string
         Some(ref methodstring) => {
@@ -140,8 +112,6 @@ fn ruokloop(config_file_path: String){
                 last_checked.insert(endpoint.url.clone(), time::Instant::now());
             }
             
-
-
         }
 
         // at the end of the loop sleep for 1 second
@@ -152,23 +122,10 @@ fn ruokloop(config_file_path: String){
 
 }
 
-// extern fn handle_sigint(_:i32) {
-//   println!("Interrupted!");
-//   panic!();
-// }
-
 
 fn main() {
-
     
-    // let handler = SigHandler::Handler(handle_sigint);
-    // let sig_action = SigAction::new(handler,SaFlags::empty(),SigSet::empty());
-    // unsafe{
-    //     signal::sigaction(signal::SIGINT, &sig_action);
-    // }
-    
-    
-    setup_logger().expect("Failed to initialise logger");
+    logger::setup_logger(log::LevelFilter::Info).expect("Failed to initialise logger");
 
     info!("Starting U OK HUN?...");
 
