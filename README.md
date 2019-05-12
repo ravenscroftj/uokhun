@@ -23,12 +23,6 @@ Build the application
 cargo build --release
 ```
 
-Run the application
-
-```shell
-./target/release/uokcli
-```
-
 ## Configuration
 
 uokhun uses a JSON config file that tells it which HTTP endpoints it should call, what parameters it should use, how regularly and who to notify when something isn't working.
@@ -48,3 +42,13 @@ Create a file called config.json
 ```
 
 This will make uokhun request `https://www.google.com/` every 30 minutes and produce a warning if it goes down.
+
+## Running uokhun
+
+Run the application with
+
+```shell
+./target/release/uokcli
+```
+
+You can tell uokhun where the config file is by setting the environment variable `UOKHUN_CONFIG_FILE`. I have a todo open that will allow you get uokhun to pull its config file froma HTTP endpoint but for now only local filesystem is supported.
